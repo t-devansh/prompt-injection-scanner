@@ -1,0 +1,29 @@
+name: CI
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install deps (if requirements.txt exists)
+        if: ${{ hashFiles('requirements.txt') != '' }}
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run tests (if tests/ exists)
+        if: ${{ hashFiles('tests/**') != '' }}
+        run: |
+          pytest -q
+
+      - name: No tests yet
+        if: ${{ hashFiles('tests/**') == '' }}
+        run: echo "No tests found; skipping."
