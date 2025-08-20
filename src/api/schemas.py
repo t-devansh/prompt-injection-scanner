@@ -1,17 +1,15 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, model_validator
 from typing import Optional
 
 class ScanRequest(BaseModel):
     url: Optional[str] = None
     html: Optional[str] = None
 
-    @field_validator('html', mode='after')
-    @classmethod
-    def ensure_one_input(cls, v, values):
-        url = values.get('url')
-        if (url is None and v is None) or (url and v):
-            raise ValueError(\"Provide exactly one of 'url' or 'html'.\")
-        return v
+    @model_validator(mode="after")
+    def _only_one_input(self):
+        if (self.url is None and self.html is None) or (self.url and self.html):
+            raise ValueError("Provide exactly one of 'url' or 'html'.")
+        return self
 
 class ScanSummary(BaseModel):
     counts: dict
