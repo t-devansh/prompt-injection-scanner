@@ -1,3 +1,36 @@
-# Prompt-Injection Risk Scanner
+# Prompt-Injection Risk Scanner (MVP scaffold)
 
-Day 1: scaffold.
+FastAPI service that will scan AI-powered pages for prompt-injection risks.  
+This repo currently ships a working API skeleton + tests + Docker one-command run.
+
+## Quickstart (Docker)
+
+```bash
+docker compose up --build -d
+
+curl http://localhost:8000/health
+# -> {"status":"ok"}
+```
+
+## Local dev (Windows PowerShell)
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+pytest -q
+uvicorn src.api.main:app --reload
+```
+
+## API
+
+- `GET /health` → `{"status":"ok"}`
+
+- `POST /scan` → accepts **exactly one** of:
+  - `{ "url": "..." }`
+  - `{ "html": "<p>...</p>" }`  
+  Returns a stub summary.
+
+## Roadmap
+
+Surface finder, rule engine, scoring, and HTML report (see Issues & Project board).
