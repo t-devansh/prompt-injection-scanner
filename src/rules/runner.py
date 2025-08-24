@@ -1,11 +1,33 @@
-# src/rules/runner.py
-from typing import List, Dict
-from .basic import rule_ignore_instructions, rule_reveal_secrets
+from typing import List, Dict, Optional, Union
+from .basic import (
+    rule_ignore_instructions,        # R1
+    rule_reveal_secrets,             # R2
+    rule_homoglyph_zero_width,       # R3 
+    rule_obfuscation_zero_width_or_homoglyphs,  # R4
+)
 
-def run_rules(text: str) -> List[Dict]:
+RuleResult = Union[None, Dict, List[Dict]]
+
+def _add(findings: List[Dict], res: RuleResult) -> None:
+    """Flatten rule outputs. Accept dict or list[dict]; ignore None/empty."""
+    if not res:
+        return
+    if isinstance(res, dict):
+        findings.append(res)
+    elif isinstance(res, list):
+        findings.extend([r for r in res if isinstance(r, dict)])
+
+def run_rules(text: str, html: Optional[str] = None) -> List[Dict]:
     findings: List[Dict] = []
-    for rule_fn in (rule_ignore_instructions, rule_reveal_secrets):
-        results = rule_fn(text)  # each returns List[Dict]
-        if results:
-            findings.extend(results)
+
+    # TEXT rules
+    for fn in (
+        rule_ignore_instructions,
+        rule_reveal_secrets,
+        rule_homoglyph_zero_width,                 # R3
+        rule_obfuscation_zero_width_or_homoglyphs  # R4
+    ):
+        _add(findings, fn(text))
+
+    # HTML-based R4 (hidden CSS) will be added separately later
     return findings
