@@ -1,5 +1,6 @@
 from pydantic import BaseModel, model_validator
 from typing import Optional
+from typing import Any, Dict, List
 
 class ScanRequest(BaseModel):
     url: Optional[str] = None
@@ -12,9 +13,9 @@ class ScanRequest(BaseModel):
         return self
 
 class ScanSummary(BaseModel):
-    counts: dict
+    counts: Dict[str, int]
     scanned_at: str
-    target: Optional[str] = None
+    target: str
 
 class ScanFinding(BaseModel):
     id: str
@@ -25,4 +26,4 @@ class ScanFinding(BaseModel):
 
 class ScanResponse(BaseModel):
     summary: ScanSummary
-    findings: list[ScanFinding]
+    findings: List[Dict[str, Any]] = []
