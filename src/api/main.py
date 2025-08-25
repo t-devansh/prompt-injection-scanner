@@ -8,6 +8,9 @@ from src.loader.html_loader import load_from_html
 from src.loader.url_loader import load_from_url
 from src.rules.runner import run_rules
 
+from src.rules.text_utils import html_to_text
+from src.finder.surfaces import find_surfaces
+
 
 app = FastAPI(title="Prompt-Injection Risk Scanner", version="0.1.0")
 router = APIRouter()
@@ -58,6 +61,9 @@ def scan(request: ScanRequest):
     text = html_to_text(lp.html)
     findings = run_rules(text)
 
+    surfaces = find_surfaces(lp.html)  # not returned yet; will use for reachability soon
+    # findings already computed via run_rules(text)
+
     summary = ScanSummary(
         counts=_count_by_severity(findings),
         scanned_at=now,
@@ -67,3 +73,4 @@ def scan(request: ScanRequest):
 
 
 app.include_router(router)
+
