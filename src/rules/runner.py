@@ -29,5 +29,11 @@ def run_rules(text: str, html: Optional[str] = None) -> List[Dict]:
     ):
         _add(findings, fn(text))
 
+    # Reachability heuristic (needs HTML)
+    if html:
+        from .reachability import reachability_check
+        _add(findings, reachability_check(html))
+
+
     # HTML-based R4 (hidden CSS) will be added separately later
     return findings
