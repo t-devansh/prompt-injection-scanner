@@ -1,4 +1,3 @@
-# tests/test_scan_rules_integration.py
 from fastapi.testclient import TestClient
 from src.api.main import app
 
@@ -15,8 +14,8 @@ def test_scan_html_returns_rule_findings():
     assert len(data["findings"]) == 1
     f = data["findings"][0]
     assert f["rule_id"] == "R1"
-    assert f["severity"].lower() == "high"
+    assert f["severity"].lower() == "medium"
 
-    # Summary counts reflect the finding
+    # Summary counts reflect the finding (scoring sets R1 to medium)
     counts = data["summary"]["counts"]
-    assert counts["high"] == 1
+    assert counts["medium"] == 1

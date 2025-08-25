@@ -5,6 +5,7 @@ from .basic import (
     rule_homoglyph_zero_width,       # R3 
     rule_obfuscation_zero_width_or_homoglyphs,  # R4
 )
+from .scoring import apply_scoring
 
 RuleResult = Union[None, Dict, List[Dict]]
 
@@ -34,6 +35,7 @@ def run_rules(text: str, html: Optional[str] = None) -> List[Dict]:
         from .reachability import reachability_check
         _add(findings, reachability_check(html))
 
+    findings = [apply_scoring(f) for f in findings]
 
     # HTML-based R4 (hidden CSS) will be added separately later
     return findings
