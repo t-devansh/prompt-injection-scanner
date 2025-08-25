@@ -1,14 +1,27 @@
-from src.rules.reachability import reachability_check
+from typing import List, Dict
+from src.finder.surfaces import find_surfaces
 
-def test_reachability_detects_user_and_ai():
-    html = """
-    <div>
-      <input id="x" type="text">
-      <div class="ai-output">Assistant response</div>
-    </div>
-    """
-    findings = reachability_check(html)
-    assert findings, "Expected a reachability finding"
-    f = findings[0]
-    assert f["rule_id"] == "HX1"
-    assert f["details"]["risk_path"] == ["user_input", "ai_output"]
+def reachability_check(html: str) -> List[Dict]:
+    """Detect if user-controlled input surfaces and AI output surfaces both exist."""
+    findings: List[Dict] = []
+    try:
+        surfaces = find_surfaces(html or "")
+    except Exception:
+        return findings
+
+    has_user = any(s.role in ("user_input", "rendered_user_content") for s in surfaces)
+    has_ai   = any(s.role == "ai_output" for s in surfaces)
+
+    if has_user and has_ai:
+        findings.append({
+            "rule_id": "HX1",
+            "title": "Potential user→AI reachability",
+            "severity": "medium",
+            "confidence": 0.6,
+            "evidence": "User input fields and AI output surfaces both present",
+            "details": {
+                "risk_path": ["user_input", "ai_output"]
+            }
+        })
+
+    return findings

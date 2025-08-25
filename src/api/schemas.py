@@ -18,12 +18,22 @@ class ScanSummary(BaseModel):
     target: str
 
 class ScanFinding(BaseModel):
-    id: str
+    rule_id: str
     title: str
-    severity: str
+    severity: str                  # "high" | "medium" | "low"
     confidence: float
-    details: dict = {}
+    evidence: Optional[str] = None
+    message: Optional[str] = None
+    sample_attack: Optional[str] = None
+    fix: Optional[str] = None
+    references: List[str] = []
+    selector: Optional[str] = None  # if rule is tied to a DOM surface
+    details: Dict[str, Any] = {}    # extra per-rule info
+    # inside class ScanFinding(BaseModel):
+    is_user_controlled: Optional[bool] = None
+
 
 class ScanResponse(BaseModel):
     summary: ScanSummary
-    findings: List[Dict[str, Any]] = []
+    findings: List[ScanFinding] = []
+
