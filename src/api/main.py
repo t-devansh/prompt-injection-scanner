@@ -59,7 +59,7 @@ def scan(request: ScanRequest):
 
     # Extract text and run rules
     text = html_to_text(lp.html)
-    findings = run_rules(text)
+    findings = run_rules(text, html=lp.html)
 
     surfaces = find_surfaces(lp.html)  # not returned yet; will use for reachability soon
     # findings already computed via run_rules(text)
