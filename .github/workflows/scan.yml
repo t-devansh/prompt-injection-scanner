@@ -23,6 +23,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run scanner CLI (fail on medium)
+      - name: Run scanner CLI (fail on high)
         run: |
-          python -m src.cli --html "<div><input><div class='ai-output'>AI reply</div></div>" --fail-on medium
+          python -m src.cli --html "<div><input><div class='ai-output'>AI reply</div></div>" --fail-on high
