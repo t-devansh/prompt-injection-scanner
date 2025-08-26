@@ -1,5 +1,5 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Query
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, Response
 from datetime import datetime, timezone
 
 from src.api.schemas import ScanRequest, ScanResponse, ScanSummary
@@ -88,7 +88,9 @@ def scan(request: ScanRequest, fail_on: str | None = Query(default=None, pattern
 
 
 @router.post("/report", response_class=HTMLResponse)
-def report(req: ScanRequest):
+def report( req: ScanRequest,
+    download: bool = Query(default=False),
+    filename: str | None = Query(default=None)):
     # Normalize to LoadedPage (lp)
     if req.html:
         lp = load_from_html(req.html)
@@ -107,7 +109,6 @@ def report(req: ScanRequest):
         sev = (f.get("severity") or "").lower()
         if sev in counts:
             counts[sev] += 1
-
     summary = {
         "counts": counts,
         "scanned_at": datetime.now(timezone.utc).isoformat(),
@@ -115,6 +116,13 @@ def report(req: ScanRequest):
     }
 
     html_out = render_report(summary, findings)
+
+    if download:
+        fname = filename or "scan-report.html"
+        headers = {"Content-Disposition": f'attachment; filename="{fname}"'}
+        return Response(content=html_out, media_type="text/html; charset=utf-8", headers=headers)
+
     return HTMLResponse(content=html_out, status_code=200)
+
 
 app.include_router(router)
