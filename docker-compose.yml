@@ -1,0 +1,24 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: prompt-injection-scanner:latest   # <- tag the built image
+    environment:
+      - MODE=api
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+  scanner-cli:
+    image: prompt-injection-scanner:latest   # <- reuse the image built by 'api'
+    environment:
+      - MODE=cli
+    # example CLI args: override at runtime as needed
+    command: ["--html", "<div><input><div class='ai-output'>AI reply</div></div>", "--fail-on", "medium"]
