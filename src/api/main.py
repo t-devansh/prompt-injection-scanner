@@ -1,21 +1,23 @@
-# at the top of src/api/main.py
-from fastapi import FastAPI, APIRouter
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, APIRouter, HTTPException, Query
+from fastapi.responses import HTMLResponse, JSONResponse
 from datetime import datetime, timezone
-from src.finder.surfaces import find_surfaces
 
 from src.api.schemas import ScanRequest, ScanResponse, ScanSummary
 from src.loader.html_loader import load_from_html
 from src.loader.url_loader import load_from_url
 from src.rules.text_utils import html_to_text
 from src.rules.runner import run_rules
+from src.rules.severity import meets_threshold
+from src.finder.surfaces import find_surfaces  # if you still want to compute surfaces
 from src.report.html_report import render_report
+
+
 
 app = FastAPI(title="Prompt-Injection Risk Scanner", version="0.1.0")
 router = APIRouter()
 
 
-@app.get("/health")
+@router.get("/health")
 def health():
     return {"status": "ok"}
 
@@ -39,7 +41,7 @@ def html_to_text(html: str) -> str:
 
 
 @router.post("/scan", response_model=ScanResponse)
-def scan(request: ScanRequest):
+def scan(request: ScanRequest, fail_on: str | None = Query(default=None, pattern="^(low|medium|high)$")):
     # must provide exactly one of url or html
     if (request.url and request.html) or (not request.url and not request.html):
         raise HTTPException(status_code=400, detail="must provide exactly one of url or html")
@@ -54,26 +56,38 @@ def scan(request: ScanRequest):
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"failed to fetch url: {e}")
     else:
-        lp = load_from_html(request.html, url=None)
+        lp = load_from_html(request.html)  # no url kwarg
 
     # Extract text and run rules
     text = html_to_text(lp.html)
     findings = run_rules(text, html=lp.html)
 
-    surfaces = find_surfaces(lp.html)  # not returned yet; will use for reachability soon
-    # findings already computed via run_rules(text)
+    # (Optional) surfaces for future use
+    _ = find_surfaces(lp.html)
+
+    # Build summary
+    counts = {"high": 0, "medium": 0, "low": 0}
+    for f in findings:
+        sev = (f.get("severity") or "").lower()
+        if sev in counts:
+            counts[sev] += 1
 
     summary = ScanSummary(
-        counts=_count_by_severity(findings),
+        counts=counts,
         scanned_at=now,
         target=target,
     )
-    return ScanResponse(summary=summary, findings=findings)
+
+    resp = ScanResponse(summary=summary, findings=findings)
+
+    # Fail-on severity gate
+    if meets_threshold(findings, fail_on):
+        return JSONResponse(status_code=409, content=resp.model_dump())
+
+    return resp
 
 
-app.include_router(router)
-
-@app.post("/report", response_class=HTMLResponse)
+@router.post("/report", response_class=HTMLResponse)
 def report(req: ScanRequest):
     # Normalize to LoadedPage (lp)
     if req.html:
@@ -87,7 +101,7 @@ def report(req: ScanRequest):
     text = html_to_text(lp.html)
     findings = run_rules(text, html=lp.html)
 
-    # Build summary (reuse your logic if already exists)
+    # Build summary
     counts = {"high": 0, "medium": 0, "low": 0}
     for f in findings:
         sev = (f.get("severity") or "").lower()
@@ -102,3 +116,5 @@ def report(req: ScanRequest):
 
     html_out = render_report(summary, findings)
     return HTMLResponse(content=html_out, status_code=200)
+
+app.include_router(router)
