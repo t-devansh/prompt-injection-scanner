@@ -26,4 +26,3 @@ jobs:
       - name: Run scanner CLI (fail on high)
         run: |
           python -m src.cli --html "<div><input><div class='ai-output'>AI reply</div></div>" --fail-on high
-
