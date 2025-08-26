@@ -88,9 +88,11 @@ def scan(request: ScanRequest, fail_on: str | None = Query(default=None, pattern
 
 
 @router.post("/report", response_class=HTMLResponse)
-def report( req: ScanRequest,
-    download: bool = Query(default=False),
-    filename: str | None = Query(default=None)):
+def report(
+    req: ScanRequest,
+    download: str | None = Query(default=None),   # accept "1", "true", "yes", "y", "on"
+    filename: str | None = Query(default=None),
+):
     # Normalize to LoadedPage (lp)
     if req.html:
         lp = load_from_html(req.html)
@@ -117,10 +119,14 @@ def report( req: ScanRequest,
 
     html_out = render_report(summary, findings)
 
-    if download:
+    # Normalize "download" truthiness
+    flag = (download or "").strip().lower()
+    is_download = flag in {"1", "true", "yes", "y", "on"}
+
+    if is_download:
         fname = filename or "scan-report.html"
         headers = {"Content-Disposition": f'attachment; filename="{fname}"'}
-        return Response(content=html_out, media_type="text/html; charset=utf-8", headers=headers)
+        return HTMLResponse(content=html_out, headers=headers, status_code=200)
 
     return HTMLResponse(content=html_out, status_code=200)
 

@@ -7,6 +7,7 @@ from .basic import (
 )
 from .scoring import apply_scoring
 from .dampener import apply_dampener
+from .enrich import enrich_with_surfaces
 
 RuleResult = Union[None, Dict, List[Dict]]
 
@@ -41,6 +42,9 @@ def run_rules(text: str, html: Optional[str] = None) -> List[Dict]:
 
     # Dampener for fenced/escaped contexts (uses original text)
     findings = [apply_dampener(text, f) for f in findings]
+
+    # 🔥 NEW: attach selector + is_user_controlled where possible
+    findings = enrich_with_surfaces(findings, html)
 
     # HTML-based R4 (hidden CSS) will be added separately later
     return findings
