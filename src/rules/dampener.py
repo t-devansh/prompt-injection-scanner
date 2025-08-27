@@ -1,6 +1,7 @@
 # src/rules/dampener.py
 import re
 from typing import Dict
+from src.config import get_dampener_strength
 
 _FENCE_PATTERNS = [
     re.compile(r"(^|[\r\n])\s*```.+?```", re.DOTALL),           # markdown fenced
@@ -32,4 +33,12 @@ def apply_dampener(text: str, finding: Dict) -> Dict:
     sev = (finding.get("severity") or "").lower()
     if sev == "high" and (conf is None or conf < 0.6):
         finding["severity"] = "medium"
+
+    factor = get_dampener_strength()
+    try:
+        conf2 = float(finding.get("confidence", 0.0))
+    except Exception:
+        conf2 = 0.0
+    finding["confidence"] = round(max(0.0, conf2 * factor), 3)
+
     return finding
