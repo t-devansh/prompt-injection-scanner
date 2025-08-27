@@ -1,4 +1,5 @@
 from typing import Dict
+from src.config import get_severity_override
 
 # Central rule scoring table
 _RULE_SCORES: Dict[str, Dict] = {
@@ -15,4 +16,9 @@ def apply_scoring(finding: Dict) -> Dict:
     if rid in _RULE_SCORES:
         finding["severity"] = _RULE_SCORES[rid]["severity"]
         finding["confidence"] = _RULE_SCORES[rid]["confidence"]
+
+    # Apply env-based override if present
+    override = get_severity_override(finding.get("rule_id"))
+    if override:
+        finding["severity"] = override
     return finding
