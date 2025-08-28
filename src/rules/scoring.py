@@ -4,10 +4,12 @@ from src.config import get_severity_override
 # Central rule scoring table
 _RULE_SCORES: Dict[str, Dict] = {
     "R1": {"severity": "medium", "confidence": 0.7},
-    "R2": {"severity": "high", "confidence": 0.8},
-    "R3": {"severity": "high", "confidence": 0.6},
+    "R2": {"severity": "high",   "confidence": 0.8},
+    "R3": {"severity": "high",   "confidence": 0.6},
     "R4": {"severity": "medium", "confidence": 0.5},
-    "HX1": {"severity": "medium", "confidence": 0.6},
+    "R5": {"severity": "medium", "confidence": 0.7},  # new
+    "R6": {"severity": "high",   "confidence": 0.7},  # new
+    "HX1": {"severity": "medium","confidence": 0.6},
 }
 
 def apply_scoring(finding: Dict) -> Dict:
