@@ -1,14 +1,15 @@
 # src/loader/html_loader.py
-from typing import Optional
+from typing import Dict, List, Optional
 from pydantic import BaseModel
+from dataclasses import dataclass, field
 
-class LoadedPage(BaseModel):
-    url: Optional[str] = None
+@dataclass
+class LoadedPage:
+    url: Optional[str]
     html: str
-    source: str = "raw_html"  # later: "browser" when we add Playwright
+    headers: Dict[str, str] = field(default_factory=dict)
+    network: List[str] = field(default_factory=list)
 
 def load_from_html(html: str, url: Optional[str] = None) -> LoadedPage:
-    """
-    Normalize pasted HTML into a consistent object the scanner can consume.
-    """
-    return LoadedPage(url=url, html=html, source="raw_html")
+    html = html or ""
+    return LoadedPage(url=url, html=html, headers={}, network=[])

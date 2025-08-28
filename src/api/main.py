@@ -10,6 +10,7 @@ from src.rules.runner import run_rules
 from src.rules.severity import meets_threshold
 from src.finder.surfaces import find_surfaces  # if you still want to compute surfaces
 from src.report.html_report import render_report
+from src.loader.playwright_loader import load_url_with_playwright 
 
 
 
@@ -41,7 +42,11 @@ def html_to_text(html: str) -> str:
 
 
 @router.post("/scan", response_model=ScanResponse)
-def scan(request: ScanRequest, fail_on: str | None = Query(default=None, pattern="^(low|medium|high)$")):
+def scan(
+    request: ScanRequest,
+    fail_on: str | None = Query(default=None, pattern="^(low|medium|high)$"),
+    rendered: bool = Query(default=False),   # NEW
+):
     # must provide exactly one of url or html
     if (request.url and request.html) or (not request.url and not request.html):
         raise HTTPException(status_code=400, detail="must provide exactly one of url or html")
@@ -51,18 +56,29 @@ def scan(request: ScanRequest, fail_on: str | None = Query(default=None, pattern
 
     # Normalize to a LoadedPage
     if request.url:
-        try:
-            lp = load_from_url(request.url)
-        except Exception as e:
-            raise HTTPException(status_code=400, detail=f"failed to fetch url: {e}")
+        if rendered:
+            # try Playwright; fall back gracefully
+            try:
+                lp = load_url_with_playwright(request.url)
+            except Exception:
+                # fallback to httpx loader
+                try:
+                    lp = load_from_url(request.url)
+                except Exception as e:
+                    raise HTTPException(status_code=400, detail=f"failed to fetch url: {e}")
+        else:
+            try:
+                lp = load_from_url(request.url)
+            except Exception as e:
+                raise HTTPException(status_code=400, detail=f"failed to fetch url: {e}")
     else:
-        lp = load_from_html(request.html)  # no url kwarg
+        lp = load_from_html(request.html)
 
     # Extract text and run rules
     text = html_to_text(lp.html)
     findings = run_rules(text, html=lp.html)
 
-    # (Optional) surfaces for future use
+    # optional surfaces (not returned)
     _ = find_surfaces(lp.html)
 
     # Build summary
@@ -72,19 +88,13 @@ def scan(request: ScanRequest, fail_on: str | None = Query(default=None, pattern
         if sev in counts:
             counts[sev] += 1
 
-    summary = ScanSummary(
-        counts=counts,
-        scanned_at=now,
-        target=target,
-    )
-
+    summary = ScanSummary(counts=counts, scanned_at=now, target=target)
     resp = ScanResponse(summary=summary, findings=findings)
 
-    # Fail-on severity gate
     if meets_threshold(findings, fail_on):
         return JSONResponse(status_code=409, content=resp.model_dump())
-
     return resp
+
 
 
 @router.post("/report", response_class=HTMLResponse)
