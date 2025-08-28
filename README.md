@@ -37,13 +37,6 @@ It includes a rule engine (R1–R6 + HX1 reachability), surface finder, HTML rep
 ---
 ## Quickstart (Docker)
 
-```bash
-docker compose up --build -d
-curl http://localhost:8000/health
-# -> {"status":"ok"}
-Add-Content -Path README.md -Value @'
-## Quickstart (Docker)
-
     docker compose up --build -d
     curl http://localhost:8000/health
     # -> {"status":"ok"}
@@ -54,6 +47,7 @@ Add-Content -Path README.md -Value @'
     echo $?
 
 ---
+
 ## Local Development (Windows PowerShell)
 
     python -m venv .venv
