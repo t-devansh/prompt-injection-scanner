@@ -1,9 +1,11 @@
 from typing import List, Dict, Optional, Union
 from .basic import (
-    rule_ignore_instructions,        # R1
-    rule_reveal_secrets,             # R2
-    rule_homoglyph_zero_width,       # R3 
+    rule_ignore_instructions,                   # R1
+    rule_reveal_secrets,                        # R2
+    rule_homoglyph_zero_width,                  # R3
     rule_obfuscation_zero_width_or_homoglyphs,  # R4
+    rule_role_coercion,                         # R5   
+    rule_data_exfil_signals,                    # R6  
 )
 from .scoring import apply_scoring
 from .dampener import apply_dampener
@@ -28,7 +30,9 @@ def run_rules(text: str, html: Optional[str] = None) -> List[Dict]:
         rule_ignore_instructions,
         rule_reveal_secrets,
         rule_homoglyph_zero_width,                 # R3
-        rule_obfuscation_zero_width_or_homoglyphs  # R4
+        rule_obfuscation_zero_width_or_homoglyphs,  # R4
+        rule_role_coercion,                         # R5
+        rule_data_exfil_signals,                    # R6
     ):
         _add(findings, fn(text))
 
