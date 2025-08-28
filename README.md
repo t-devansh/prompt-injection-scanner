@@ -34,3 +34,17 @@ uvicorn src.api.main:app --reload
 ## Roadmap
 
 Surface finder, rule engine, scoring, and HTML report (see Issues & Project board).
+
+### Rendered scanning (optional Playwright)
+
+Rendered scans use a headless browser to capture the DOM/network:
+
+```bash
+# optional: only if you want rendered mode locally
+pip install -r requirements-playwright.txt
+python -m playwright install chromium
+
+# CLI
+python -m src.cli --url https://example.com --fail-on high
+# API
+POST /scan?rendered=1 { "url": "https://example.com" }
