@@ -12,9 +12,20 @@ from src.finder.surfaces import find_surfaces  # if you still want to compute su
 from src.report.html_report import render_report
 from src.loader.playwright_loader import load_url_with_playwright 
 
-
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Prompt-Injection Risk Scanner", version="0.1.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",  # Vite dev server
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 router = APIRouter()
 
 
