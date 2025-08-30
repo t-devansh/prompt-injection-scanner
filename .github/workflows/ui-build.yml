@@ -18,17 +18,18 @@ jobs:
         working-directory: ui
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'   # keep LTS to match your local
-      - name: Clean npm cache (avoid broken optional deps)
-        run: npm cache clean --force
-      - name: Install deps (lockfile)
-        run: npm ci
-      - name: Fallback install without lockfile (workaround rollup optionalDeps bug)
-        if: failure()
-        run: |
-          rm -rf node_modules package-lock.json
-          npm install --no-audit --no-fund
-      - name: Build
-        run: npm run build
+          node-version: '20'
+
+      # Use pnpm instead of npm to avoid Rollup optional-deps bug
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install deps (pnpm)
+        run: pnpm install
+
+      - name: Build (pnpm)
+        run: pnpm build
