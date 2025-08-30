@@ -1,4 +1,5 @@
-import { Button, Badge, Card } from "flowbite-react";
+import { Card } from "flowbite-react";
+import ScanForm from "./components/ScanForm.jsx";
 
 export default function App() {
   return (
@@ -11,15 +12,11 @@ export default function App() {
       </header>
 
       <main className="mx-auto max-w-4xl p-4 space-y-6">
+        <ScanForm />
         <Card>
-          <h2 className="text-lg font-medium">Quick check</h2>
-          <p className="text-sm text-gray-600">
-            UI scaffold is running. Next tasks will add the form and results.
+          <p className="text-sm text-gray-500">
+            Tip: run your API: <code>uvicorn src.api.main:app --host 0.0.0.0 --port 8000</code>
           </p>
-          <div className="flex items-center gap-2">
-            <Badge color="info">UI Ready</Badge>
-            <Button>Placeholder Button</Button>
-          </div>
         </Card>
       </main>
 
