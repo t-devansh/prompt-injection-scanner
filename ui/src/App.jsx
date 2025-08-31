@@ -25,6 +25,7 @@ export default function App() {
         </Card>
       </main>
 
+
       {/* Footer */}
       <footer className="mx-auto max-w-4xl p-4 text-xs text-gray-500 dark:text-gray-400 text-center">
         Prompt-Injection Risk Scanner · Built with FastAPI · React · Tailwind · Flowbite

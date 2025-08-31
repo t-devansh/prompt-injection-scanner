@@ -12,7 +12,6 @@ export default function ScanForm() {
   const [reportLoading, setReportLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
-
   const hasInput = mode === "url" ? Boolean(url) : Boolean(html);
 
   const onSubmit = async (e) => {
@@ -137,13 +136,12 @@ export default function ScanForm() {
               <details className="mt-3">
                 <summary className="cursor-pointer text-sm text-gray-500">Raw JSON</summary>
                 <pre className="mt-2 overflow-auto rounded bg-gray-100 p-3 text-xs">
-{JSON.stringify(result, null, 2)}
+                  {JSON.stringify(result, null, 2)}
                 </pre>
               </details>
             </div>
           </>
         )}
-
       </form>
     </Card>
   );
