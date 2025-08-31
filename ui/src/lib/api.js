@@ -14,3 +14,19 @@ export async function scan(target) {
   }
   return data;
 }
+
+export async function getReport(target) {
+  const res = await fetch(`${API_BASE}/report`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "text/html",
+    },
+    body: JSON.stringify(target),
+  });
+  const html = await res.text();
+  if (!res.ok) {
+    throw new Error(`Report failed (${res.status})`);
+  }
+  return html; // HTML string
+}
