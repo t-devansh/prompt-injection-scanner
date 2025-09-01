@@ -107,7 +107,7 @@ export default function ScanForm({
 
     if (mode === "url" && !isLikelyUrl(trimmedUrl)) {
       onStart?.();
-      onError?.("Please enter a valid URL (include http:// or https://).");
+      onError?.("Please enter a valid URL (include http:// or https://)");
       setSubmitting(false);
       return;
     }

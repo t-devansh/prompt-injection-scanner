@@ -69,9 +69,9 @@ export default function SeverityDonut({
         key={targetPct}
         className="relative"
         style={{ width: size, height: size }}
-        initial={reduced ? false : { scale: 0.85, opacity: 0 }}
+        initial={reduced ? false : { scale: 0.1, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.5, ease: [0.2, 0.8, 0.2, 1] }}
+        transition={{ duration: 0.9, ease: [0.2, 0.8, 0.2, 1] }}
       >
         <svg width={size} height={size}>
           <circle
