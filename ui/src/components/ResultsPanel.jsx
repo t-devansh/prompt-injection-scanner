@@ -180,7 +180,7 @@ export default function ResultsPanel({ loading, error = "", result, payload, cla
                   <TableHeadCell>Evidence</TableHeadCell>
                 </TableRow>
               </TableHead>
-              <TableBody className="divide-y">
+              <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
                 {Array.from({ length: 8 }).map((_, i) => (
                   <TableRow key={i} className="bg-white dark:bg-gray-900 animate-pulse">
                     <TableCell className="px-4 py-3 align-top">

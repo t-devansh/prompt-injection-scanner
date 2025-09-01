@@ -5,10 +5,9 @@ import {
   Textarea,
   Button,
   Spinner,
-  Modal,
 } from "flowbite-react";
 import { HiArrowsExpand } from "react-icons/hi";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { scan } from "../lib/api.js";
 
 function ModeSwitch({ mode, setMode, disabled }) {
@@ -97,7 +96,8 @@ export default function ScanForm({
     }
   }
 
-  const payload = () => (mode === "url" ? { url: trimmedUrl } : { html: trimmedHtml });
+  const payload = () =>
+    mode === "url" ? { url: trimmedUrl } : { html: trimmedHtml };
 
   async function handleSubmit(e) {
     e?.preventDefault?.();
@@ -140,7 +140,7 @@ export default function ScanForm({
   }
 
   const isLoading = busy || submitting;
-  const INPUT_H = "h-40";
+  const INPUT_H = "h-12"; // make collapsed input same size as TextInput
 
   return (
     <Card className={`h-full ${className}`}>
@@ -160,7 +160,10 @@ export default function ScanForm({
         </Button>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex h-[calc(100%-2.75rem)] flex-col gap-4">
+      <form
+        onSubmit={handleSubmit}
+        className="flex h-[calc(100%-2.75rem)] flex-col gap-4"
+      >
         <ModeSwitch mode={mode} setMode={setMode} disabled={isLoading} />
 
         <div className={INPUT_H}>
@@ -176,8 +179,8 @@ export default function ScanForm({
             </div>
           ) : (
             <div className="h-full flex items-start">
-              <Textarea
-                className="w-full h-full resize-none thin-scrollbar"
+              <TextInput
+                className="w-full"
                 placeholder="<div>Paste HTML here</div>"
                 value={html}
                 onChange={(e) => setHtml(e.target.value)}
@@ -206,7 +209,12 @@ export default function ScanForm({
               </>
             ) : (
               <>
-                <svg className="w-4 h-4 me-2" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <svg
+                  className="w-4 h-4 me-2"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
                   <path d="M8 5v14l11-7-11-7z" />
                 </svg>
                 Start Scan
@@ -239,23 +247,65 @@ export default function ScanForm({
         </div>
       </form>
 
-      <Modal show={expandOpen} size="7xl" onClose={() => setExpandOpen(false)}>
-        <Modal.Header>Edit HTML (expanded)</Modal.Header>
-        <Modal.Body>
-          <Textarea
-            value={html}
-            onChange={(e) => setHtml(e.target.value)}
-            className="h-[60vh] w-full resize-none thin-scrollbar"
-            placeholder="<div>Paste HTML here</div>"
-          />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={() => setExpandOpen(false)}>Save & Close</Button>
-          <Button color="light" onClick={() => setExpandOpen(false)}>
-            Cancel
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {/* Custom Modal */}
+      <AnimatePresence>
+        {expandOpen && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }} // fade-out
+            transition={{ duration: 0.2 }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.25, ease: [0.2, 0.8, 0.2, 1] }}
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-5xl mx-4"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between p-4 border-b dark:border-gray-700">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Edit HTML
+                </h3>
+                <button
+                  onClick={() => setExpandOpen(false)}
+                  className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Body */}
+              <div className="p-4">
+                <Textarea
+                  value={html}
+                  onChange={(e) => setHtml(e.target.value)}
+                  className="h-[60vh] w-full resize-none thin-scrollbar"
+                  placeholder="<div>Paste HTML here</div>"
+                />
+              </div>
+
+              {/* Footer */}
+              <div className="flex justify-end gap-2 p-4 border-t dark:border-gray-700">
+                <button
+                  onClick={() => setExpandOpen(false)}
+                  className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+                >
+                  Save & Close
+                </button>
+                <button
+                  onClick={() => setExpandOpen(false)}
+                  className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600"
+                >
+                  Cancel
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Card>
   );
 }
