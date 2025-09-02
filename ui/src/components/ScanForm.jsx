@@ -65,6 +65,8 @@ export default function ScanForm({
   onError,
   onClear,
   onNewPayload,
+  failOn = "none",
+  rendered = false,
   className = "",
   busy = false,
 }) {
@@ -123,8 +125,13 @@ export default function ScanForm({
     onStart?.();
 
     try {
-      const data = await scan(p);
-      onResult?.(data);
+      const data = await scan(p, { failOn, rendered });
+      if (data._failOnTriggered) {
+        onError?.(`Risk threshold "${failOn}" was exceeded.`);
+        onResult?.(data); // still show findings
+      } else {
+        onResult?.(data);
+      }
     } catch (err) {
       onError?.(err?.message || "Scan failed");
     } finally {

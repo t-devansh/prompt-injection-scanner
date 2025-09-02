@@ -8,6 +8,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Spinner,
 } from "flowbite-react";
 import FindingsTable from "./FindingsTable.jsx";
 import { getReport } from "../lib/api";
@@ -58,6 +59,9 @@ export default function ResultsPanel({ loading, error = "", result, payload, cla
       a.click();
       a.remove();
       URL.revokeObjectURL(urlObj);
+    } catch (err) {
+      console.error("Download report failed:", err);
+      alert("Failed to download report");
     } finally {
       setReportLoading(false);
     }
@@ -147,13 +151,20 @@ export default function ResultsPanel({ loading, error = "", result, payload, cla
             type="button"
             onClick={onDownloadReport}
             disabled={!canDownload || loading}
-            className="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4
+            className="flex items-center gap-2 text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4
                        focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center
                        disabled:opacity-50 disabled:pointer-events-none
                        dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500
                        dark:focus:ring-blue-800"
           >
-            {reportLoading ? "Downloading…" : "Download report"}
+            {reportLoading ? (
+              <>
+                <Spinner size="sm" />
+                Downloading…
+              </>
+            ) : (
+              "Download report"
+            )}
           </button>
         </div>
       </div>
@@ -215,7 +226,6 @@ export default function ResultsPanel({ loading, error = "", result, payload, cla
           <div className="thin-scrollbar flex-1 overflow-y-auto overflow-x-hidden rounded border border-gray-200 dark:border-gray-700">
             <div className="flex h-full items-center justify-center p-8 text-center">
               <div>
-                {/* document + magnifier + X icon */}
                 <svg
                   className="mx-auto mb-3 h-14 w-14 text-gray-400 dark:text-gray-500"
                   viewBox="0 0 48 48"

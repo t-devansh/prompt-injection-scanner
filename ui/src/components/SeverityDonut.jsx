@@ -1,11 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, useMotionValue, animate, useTransform } from "framer-motion";
 
+// Weighted scoring function
+// High = 100, Medium = 60, Low = 30
 function scoreFromCounts({ high = 0, medium = 0, low = 0 }) {
   const total = high + medium + low;
   if (!total) return 0;
-  const weighted = high * 3 + medium * 2 + low * 1;
-  return Math.round((weighted / (total * 3)) * 100);
+
+  const weighted =
+    high * 100 + medium * 60 + low * 30; // weighted sum
+  const avg = weighted / total; // average per finding
+  return Math.round(avg); // scale already 0–100
 }
 
 export default function SeverityDonut({
@@ -59,9 +64,9 @@ export default function SeverityDonut({
     return () => controls.stop();
   }, [targetPct, reduced, duration]);
 
-  let ringColor = "#16a34a";
-  if (targetPct >= 67) ringColor = "#ef4444";
-  else if (targetPct >= 34) ringColor = "#f59e0b";
+  let ringColor = "#16a34a"; // green
+  if (targetPct >= 67) ringColor = "#ef4444"; // red
+  else if (targetPct >= 34) ringColor = "#f59e0b"; // amber
 
   return (
     <div className="flex items-center justify-center">
@@ -98,8 +103,11 @@ export default function SeverityDonut({
 
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center" aria-live="polite">
-            <div className="text-2xl font-extrabold tabular-nums">
+            <div className="text-2xl font-extrabold tabular-nums flex items-baseline justify-center gap-1">
               {displayPct}
+              <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">
+                %
+              </span>
             </div>
             <motion.div
               initial={{ y: -10, opacity: 0 }}

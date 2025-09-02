@@ -2,6 +2,7 @@ import { Card } from "flowbite-react";
 import SeverityDonut from "./SeverityDonut.jsx";
 import { motion, useMotionValue, animate } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
+import warningIcon from "../assets/icons/warning_icon.svg"; // ✅ Import image path
 
 function AnimatedCountBadge({
   label,
@@ -47,6 +48,8 @@ export default function SummaryPanel({
   loading,
   error = "",
   counts = { high: 0, medium: 0, low: 0 },
+  failOnTriggered = false,
+  thresholdLabel = "None",
   className = "",
 }) {
   const hasError = !!error;
@@ -83,25 +86,21 @@ export default function SummaryPanel({
           <span className="sr-only">Loading…</span>
         </div>
       ) : hasError ? (
+        // Error UI
         <div className="grid grid-cols-1 items-center gap-4 sm:grid-cols-2">
           <div className="flex justify-center sm:justify-start">
-            <svg
-              className="w-[120px] h-[120px] text-red-500 dark:text-red-400"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
-                fill="currentColor"
-              />
-              <path
-                d="M12 8v5"
-                stroke="white"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              />
-              <circle cx="12" cy="16.5" r="1.3" fill="white" />
-            </svg>
+            {/* ✅ Animated custom warning icon */}
+            <motion.img
+              src={warningIcon}
+              alt="Warning"
+              className="w-[120px] h-[120px]"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{
+                repeat: Infinity,
+                duration: 1.8,
+                ease: "easeInOut",
+              }}
+            />
           </div>
           <div>
             <div className="text-sm font-semibold text-red-600 dark:text-red-400">
@@ -112,7 +111,37 @@ export default function SummaryPanel({
             </p>
           </div>
         </div>
+      ) : failOnTriggered ? (
+        // Threshold exceeded UI
+        <div className="grid grid-cols-1 items-center gap-4 sm:grid-cols-2">
+          <div className="flex justify-center sm:justify-start">
+            <motion.img
+              src={warningIcon}
+              alt="Threshold exceeded"
+              className="w-[120px] h-[120px]"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{
+                repeat: Infinity,
+                duration: 1.8,
+                ease: "easeInOut",
+              }}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <div className="text-sm font-semibold text-red-600 dark:text-red-400">
+              Threshold exceeded
+            </div>
+            <p className="text-sm text-gray-700 dark:text-gray-300">
+              Findings were detected at or above your configured{" "}
+              <span className="font-semibold">Threshold: {thresholdLabel}</span>
+            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Findings are still listed on the right for review.
+            </p>
+          </div>
+        </div>
       ) : (
+        // Normal donut + badges
         <div
           key={key}
           className="grid grid-cols-1 items-center gap-4 sm:grid-cols-2"
