@@ -35,6 +35,28 @@ It includes a rule engine (R1–R6 + HX1 reachability), surface finder, HTML rep
   - Pytest + scanner workflow (default fail_on=high).
 
 ---
+
+## Quickstart (Local UI)
+Run the backend:
+```
+powershell uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000 
+```
+
+Run the frontend:
+![Frontend Screenshot](docs/frontend-screenshot.png)
+
+```
+powershell
+cd ui
+npm install
+npm run dev
+```
+Then open the link Vite shows in your terminal  
+(usually http://localhost:5173 or http://localhost:5174).  
+
+Make sure the backend is still running on port 8000.
+
+---
 ## Quickstart (Docker)
 
     docker compose up --build -d
@@ -48,18 +70,7 @@ It includes a rule engine (R1–R6 + HX1 reachability), surface finder, HTML rep
 
 ---
 
-## Local Development (Windows PowerShell)
 
-    python -m venv .venv
-    .\.venv\Scripts\Activate.ps1
-    pip install -r requirements.txt
-    pytest -q
-
-Run API (hot reload):
-
-    uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
-
----
 ## API Usage
 
 ### Health
