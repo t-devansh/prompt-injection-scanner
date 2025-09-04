@@ -2,21 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Minimal, unobtrusive scrollbar for modern browsers */
-.thin-scrollbar {
-  scrollbar-width: thin;              /* Firefox */
-  scrollbar-color: #9ca3af transparent;
+/* Animated gradient background */
+body {
+  @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100;
 }
-.thin-scrollbar::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+
+.bg-animated {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: -1;
 }
-.thin-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-.thin-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #9ca3af;          /* Tailwind gray-400 */
+
+.bg-animated .blob {
+  position: absolute;
+  width: 600px;
+  height: 600px;
   border-radius: 9999px;
-  border: 2px solid transparent;      /* creates some padding effect */
-  background-clip: padding-box;
+  filter: blur(120px);
+  opacity: 0.6;
+  animation: drift 18s ease-in-out infinite;
+}
+
+.bg-animated .blob:nth-child(1) {
+  top: -20%;
+  left: -20%;
+  background: #3b82f6; /* blue */
+  animation-delay: 0s;
+}
+.bg-animated .blob:nth-child(2) {
+  bottom: -20%;
+  right: -15%;
+  background: #a855f7; /* purple */
+  animation-delay: 6s;
+}
+.bg-animated .blob:nth-child(3) {
+  top: 40%;
+  left: 30%;
+  background: #ec4899; /* pink */
+  animation-delay: 12s;
+}
+
+@keyframes drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  25%  { transform: translate(100px, -100px) scale(1.1); }
+  50%  { transform: translate(0, -150px) scale(1); }
+  75%  { transform: translate(-100px, 100px) scale(0.9); }
+  100% { transform: translate(0, 0) scale(1); }
 }
