@@ -16,6 +16,13 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Prompt-Injection Risk Scanner", version="0.1.0")
 
+DEV_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:5174",
+]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
