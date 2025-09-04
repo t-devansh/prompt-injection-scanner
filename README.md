@@ -43,7 +43,6 @@ powershell uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 Run the frontend:
-![Frontend Screenshot](docs/frontend-screenshot.png)
 
 ```
 powershell
@@ -51,6 +50,9 @@ cd ui
 npm install
 npm run dev
 ```
+
+![Frontend Screenshot](docs/FrontendUI.png)
+
 Then open the link Vite shows in your terminal  
 (usually http://localhost:5173 or http://localhost:5174).  
 
