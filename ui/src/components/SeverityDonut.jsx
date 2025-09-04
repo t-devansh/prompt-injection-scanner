@@ -1,16 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, useMotionValue, animate, useTransform } from "framer-motion";
 
-// Weighted scoring function
-// High = 100, Medium = 60, Low = 30
+// Weighted scoring: High=100, Medium=60, Low=30
 function scoreFromCounts({ high = 0, medium = 0, low = 0 }) {
   const total = high + medium + low;
   if (!total) return 0;
-
-  const weighted =
-    high * 100 + medium * 60 + low * 30; // weighted sum
-  const avg = weighted / total; // average per finding
-  return Math.round(avg); // scale already 0–100
+  const weighted = high * 100 + medium * 60 + low * 30;
+  const avg = weighted / total;
+  return Math.round(avg);
 }
 
 export default function SeverityDonut({
@@ -64,7 +61,7 @@ export default function SeverityDonut({
     return () => controls.stop();
   }, [targetPct, reduced, duration]);
 
-  let ringColor = "#16a34a"; // green
+  let ringColor = "#22c55e"; // green
   if (targetPct >= 67) ringColor = "#ef4444"; // red
   else if (targetPct >= 34) ringColor = "#f59e0b"; // amber
 
@@ -83,7 +80,7 @@ export default function SeverityDonut({
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke="#e5e7eb"
+            stroke="rgba(255,255,255,0.25)"
             strokeWidth={stroke}
             fill="none"
           />
@@ -103,11 +100,9 @@ export default function SeverityDonut({
 
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center" aria-live="polite">
-            <div className="text-2xl font-extrabold tabular-nums flex items-baseline justify-center gap-1">
+            <div className="text-2xl font-extrabold tabular-nums flex items-baseline justify-center gap-1 text-white">
               {displayPct}
-              <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">
-                %
-              </span>
+              <span className="text-sm font-semibold text-gray-200">%</span>
             </div>
             <motion.div
               initial={{ y: -10, opacity: 0 }}
@@ -117,7 +112,7 @@ export default function SeverityDonut({
                 duration: reduced ? 0 : duration * 0.45,
                 ease: [0.2, 0.8, 0.2, 1],
               }}
-              className="text-[10px] uppercase tracking-wide font-semibold text-gray-500"
+              className="text-[10px] uppercase tracking-wide font-semibold text-gray-300"
             >
               risk
             </motion.div>

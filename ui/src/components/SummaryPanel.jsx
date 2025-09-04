@@ -2,7 +2,7 @@ import { Card } from "flowbite-react";
 import SeverityDonut from "./SeverityDonut.jsx";
 import { motion, useMotionValue, animate } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
-import warningIcon from "../assets/icons/warning_icon.svg"; // ✅ Import image path
+import warningIcon from "../assets/icons/warning_icon.svg";
 
 function AnimatedCountBadge({
   label,
@@ -59,11 +59,11 @@ export default function SummaryPanel({
   );
 
   return (
-    <Card className={`h-full ${className}`}>
+    <Card
+      className={`h-full !bg-white/10 dark:!bg-white/5 !backdrop-blur-md !border !border-white/20 dark:!border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.12)] ${className}`}
+    >
       <div className="-mt-1 md:-mt-2 mb-3 flex items-center justify-between">
-        <h2 className="text-lg md:text-xl font-semibold text-gray-700 dark:text-gray-200">
-          Scan Summary
-        </h2>
+        <h2 className="text-lg md:text-xl font-semibold text-gray-100">Scan Summary</h2>
       </div>
 
       {loading ? (
@@ -74,14 +74,14 @@ export default function SummaryPanel({
         >
           <div className="flex justify-center sm:justify-start">
             <div className="relative w-[120px] h-[120px]">
-              <div className="absolute inset-0 rounded-full bg-gray-200 dark:bg-gray-700" />
-              <div className="absolute inset-4 rounded-full bg-gray-100 dark:bg-gray-800" />
+              <div className="absolute inset-0 rounded-full bg-white/20" />
+              <div className="absolute inset-4 rounded-full bg-white/10" />
             </div>
           </div>
           <div className="flex flex-col gap-3 max-w-[280px]">
-            <div className="h-8 rounded-2xl bg-gray-200 dark:bg-gray-700" />
-            <div className="h-8 rounded-2xl bg-gray-200 dark:bg-gray-700" />
-            <div className="h-8 rounded-2xl bg-gray-200 dark:bg-gray-700" />
+            <div className="h-8 rounded-2xl bg-white/15" />
+            <div className="h-8 rounded-2xl bg-white/15" />
+            <div className="h-8 rounded-2xl bg-white/15" />
           </div>
           <span className="sr-only">Loading…</span>
         </div>
@@ -89,26 +89,17 @@ export default function SummaryPanel({
         // Error UI
         <div className="grid grid-cols-1 items-center gap-4 sm:grid-cols-2">
           <div className="flex justify-center sm:justify-start">
-            {/* ✅ Animated custom warning icon */}
             <motion.img
               src={warningIcon}
               alt="Warning"
               className="w-[120px] h-[120px]"
               animate={{ scale: [1, 1.1, 1] }}
-              transition={{
-                repeat: Infinity,
-                duration: 1.8,
-                ease: "easeInOut",
-              }}
+              transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
             />
           </div>
           <div>
-            <div className="text-sm font-semibold text-red-600 dark:text-red-400">
-              Scan failed
-            </div>
-            <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">
-              {error}
-            </p>
+            <div className="text-sm font-semibold text-red-300">Scan failed</div>
+            <p className="mt-1 text-sm text-gray-200">{error}</p>
           </div>
         </div>
       ) : failOnTriggered ? (
@@ -120,32 +111,21 @@ export default function SummaryPanel({
               alt="Threshold exceeded"
               className="w-[120px] h-[120px]"
               animate={{ scale: [1, 1.1, 1] }}
-              transition={{
-                repeat: Infinity,
-                duration: 1.8,
-                ease: "easeInOut",
-              }}
+              transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
             />
           </div>
           <div className="flex flex-col gap-1">
-            <div className="text-sm font-semibold text-red-600 dark:text-red-400">
-              Threshold exceeded
-            </div>
-            <p className="text-sm text-gray-700 dark:text-gray-300">
+            <div className="text-sm font-semibold text-red-300">Threshold exceeded</div>
+            <p className="text-sm text-gray-200">
               Findings were detected at or above your configured{" "}
               <span className="font-semibold">Threshold: {thresholdLabel}</span>
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Findings are still listed on the right for review.
-            </p>
+            <p className="text-xs text-gray-300">Findings are still listed on the right for review.</p>
           </div>
         </div>
       ) : (
         // Normal donut + badges
-        <div
-          key={key}
-          className="grid grid-cols-1 items-center gap-4 sm:grid-cols-2"
-        >
+        <div key={key} className="grid grid-cols-1 items-center gap-4 sm:grid-cols-2">
           <div className="flex justify-center sm:justify-start">
             <SeverityDonut counts={counts} />
           </div>
@@ -153,22 +133,22 @@ export default function SummaryPanel({
             <AnimatedCountBadge
               label="High"
               value={counts.high}
-              boxClass="border-2 border-red-500 bg-red-500/10 dark:border-red-400 dark:bg-red-400/10"
-              textClass="text-red-600 dark:text-red-400"
+              boxClass="border-2 border-red-400/70 bg-red-400/10"
+              textClass="text-red-200"
               delay={0}
             />
             <AnimatedCountBadge
               label="Medium"
               value={counts.medium}
-              boxClass="border-2 border-amber-500 bg-amber-500/10 dark:border-amber-400 dark:bg-amber-400/10"
-              textClass="text-amber-600 dark:text-amber-400"
+              boxClass="border-2 border-amber-300/70 bg-amber-300/10"
+              textClass="text-amber-100"
               delay={0.22}
             />
             <AnimatedCountBadge
               label="Low"
               value={counts.low}
-              boxClass="border-2 border-emerald-500 bg-emerald-500/10 dark:border-emerald-400 dark:bg-emerald-400/10"
-              textClass="text-emerald-600 dark:text-emerald-400"
+              boxClass="border-2 border-emerald-300/70 bg-emerald-300/10"
+              textClass="text-emerald-100"
               delay={0.44}
             />
           </div>
