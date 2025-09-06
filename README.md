@@ -36,6 +36,38 @@ It includes a rule engine (R1–R6 + HX1 reachability), surface finder, HTML rep
 
 ---
 
+## Setup 
+
+Follow these steps if you're running the project in a fresh environment.
+
+### 1. Clone the repository
+
+First, download the project from GitHub and move into the project folder:
+
+```
+bash
+git clone https://github.com/t-devansh/prompt-injection-scanner.git
+cd prompt-injection-scanner
+```
+---
+### 2. Set up the backend (FastAPI)
+
+Create a virtual environment and install the Python dependencies:
+
+```bash
+python -m venv .venv
+# Activate the environment
+source .venv/bin/activate   # Mac/Linux
+.\.venv\Scripts\activate    # Windows PowerShell
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+Once the dependencies are installed, follow the [Quickstart (Local UI)](#quickstart-local-ui) section to start the backend and frontend servers.
+
+---
+
 ## Quickstart (Local UI)
 Run the backend:
 ```
