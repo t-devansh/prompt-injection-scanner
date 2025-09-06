@@ -1,4 +1,4 @@
-﻿# Prompt-Injection Risk Scanner
+# Prompt-Injection Risk Scanner
 
 A FastAPI service and CLI that scan AI-powered pages for prompt-injection risks.
 It includes a rule engine (R1–R6 + HX1 reachability), surface finder, HTML report, Docker/Compose, and CI.
