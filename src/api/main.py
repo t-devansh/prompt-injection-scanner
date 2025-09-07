@@ -17,11 +17,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Prompt-Injection Risk Scanner", version="0.1.0")
 
-
-
-app.include_router(router)
-
-
 DEV_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:5174",
@@ -177,3 +172,5 @@ def report(
 
     return HTMLResponse(content=html_out, status_code=200)
 
+
+app.include_router(router)
