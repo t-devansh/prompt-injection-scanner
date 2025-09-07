@@ -23,15 +23,24 @@ DEV_ORIGINS = [
     "http://127.0.0.1:5174",
 ]
 
+# Allowed origins for local dev + GitHub Pages
+ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+    "https://t-devansh.github.io",  # GitHub Pages domain
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:5174",
-        "http://127.0.0.1:5174",  # Vite dev server
-        "https://t-devansh.github.io",  # GitHub Pages frontend
-    ],
+    allow_origins= ALLOWED_ORIGINS,
+        # "http://localhost:5173",
+        # "http://127.0.0.1:5173",
+        # "http://localhost:5174",
+        # "http://127.0.0.1:5174",  # Vite dev server
+        # "https://t-devansh.github.io",  # GitHub Pages frontend
+    
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
