@@ -14,6 +14,9 @@ from src.loader.playwright_loader import load_url_with_playwright
 
 from fastapi.middleware.cors import CORSMiddleware
 
+
+app.include_router(router)
+
 app = FastAPI(title="Prompt-Injection Risk Scanner", version="0.1.0")
 
 DEV_ORIGINS = [
@@ -171,5 +174,3 @@ def report(
 
     return HTMLResponse(content=html_out, status_code=200)
 
-
-app.include_router(router)
