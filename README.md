@@ -1,4 +1,4 @@
-# Prompt-Injection Risk Scanner
+﻿# Prompt-Injection Risk Scanner
 
 A FastAPI service and CLI that scan AI-powered pages for prompt-injection risks.
 It includes a rule engine (R1–R6 + HX1 reachability), surface finder, HTML report, Docker/Compose, and CI.
@@ -45,7 +45,7 @@ Follow these steps if you're running the project in a fresh environment.
 First, download the project from GitHub and move into the project folder:
 
 ```
-bash
+
 git clone https://github.com/t-devansh/prompt-injection-scanner.git
 cd prompt-injection-scanner
 ```
@@ -54,7 +54,7 @@ cd prompt-injection-scanner
 
 Create a virtual environment and install the Python dependencies:
 
-```bash
+```
 python -m venv .venv
 # Activate the environment
 source .venv/bin/activate   # Mac/Linux
@@ -71,13 +71,12 @@ Once the dependencies are installed, follow the [Quickstart (Local UI)](#quickst
 ## Quickstart (Local UI)
 Run the backend:
 ```
-powershell uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000 
+uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000 
 ```
 
 Run the frontend:
 
 ```
-powershell
 cd ui
 npm install
 npm run dev
