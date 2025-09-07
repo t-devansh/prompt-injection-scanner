@@ -47,7 +47,7 @@ def run_rules(text: str, html: Optional[str] = None) -> List[Dict]:
     # Dampener for fenced/escaped contexts (uses original text)
     findings = [apply_dampener(text, f) for f in findings]
 
-    # 🔥 NEW: attach selector + is_user_controlled where possible
+    # NEW: attach selector + is_user_controlled where possible
     findings = enrich_with_surfaces(findings, html)
 
     # HTML-based R4 (hidden CSS) will be added separately later

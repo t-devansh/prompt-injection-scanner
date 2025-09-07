@@ -65,8 +65,8 @@ def _count_by_severity(findings):
 
 
 def html_to_text(html: str) -> str:
-    # extremely simple HTML → text for now
-    # keeps it dependency-free; we’ll improve later if needed
+    # extremely simple HTML -> text for now
+    # keeps it dependency-free; will improve later if needed
     import re
     text = re.sub(r"<[^>]+>", " ", html)       # strip tags
     text = re.sub(r"\s+", " ", text).strip()   # collapse whitespace

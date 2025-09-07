@@ -45,7 +45,7 @@ def load_from_url(url: str, timeout: float = 15.0) -> LoadedPage:
         resp = client.get(url)
         resp.raise_for_status()
         html = resp.text
-        # Minimal network trail (we’ll expand later)
+        # Minimal network trail (expand later)
         network = [f"{resp.request.method} {resp.request.url} -> {resp.status_code}"]
         return LoadedPage(
             url=str(resp.request.url),
@@ -55,7 +55,7 @@ def load_from_url(url: str, timeout: float = 15.0) -> LoadedPage:
         )
 
 
-# keep your existing Playwright stub below (unchanged)
+# keep existing Playwright stub below (unchanged)
 def load_url_with_playwright(url: str, wait: str = "networkidle") -> LoadedPage:
     """
     Skeleton/stub. Real implementation will use Playwright (later).
