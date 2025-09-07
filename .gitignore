@@ -1,6 +1,22 @@
+# Python
 __pycache__/
 *.pyc
 .venv/
-.env
 .pytest_cache/
+
+# Environment files
+.env
+.env.local
+
+# Node / Frontend
+node_modules/
+dist/
+
+# Deployment
+vercel.json
+
+# Misc
+*.log
+
+# Local helpers
 call_scan.py
