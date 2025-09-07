@@ -30,6 +30,7 @@ app.add_middleware(
         "http://127.0.0.1:5173",
         "http://localhost:5174",
         "http://127.0.0.1:5174",  # Vite dev server
+        "https://t-devansh.github.io",  # GitHub Pages frontend
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -55,7 +56,7 @@ def _count_by_severity(findings):
 
 def html_to_text(html: str) -> str:
     # extremely simple HTML → text for now
-    # keeps it dependency‑free; we’ll improve later if needed
+    # keeps it dependency-free; we’ll improve later if needed
     import re
     text = re.sub(r"<[^>]+>", " ", html)       # strip tags
     text = re.sub(r"\s+", " ", text).strip()   # collapse whitespace
