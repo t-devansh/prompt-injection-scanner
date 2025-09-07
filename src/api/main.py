@@ -15,9 +15,12 @@ from src.loader.playwright_loader import load_url_with_playwright
 from fastapi.middleware.cors import CORSMiddleware
 
 
+app = FastAPI(title="Prompt-Injection Risk Scanner", version="0.1.0")
+
+
+
 app.include_router(router)
 
-app = FastAPI(title="Prompt-Injection Risk Scanner", version="0.1.0")
 
 DEV_ORIGINS = [
     "http://localhost:5173",
