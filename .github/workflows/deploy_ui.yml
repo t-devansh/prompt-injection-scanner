@@ -12,6 +12,8 @@ jobs:
     defaults:
       run:
         working-directory: ui
+    env:                # 👈 add here so it applies to all steps
+      ROLLUP_SKIP_NODEJS_NATIVE: "1"
 
     steps:
       - name: Checkout
@@ -23,12 +25,10 @@ jobs:
           node-version: 20
 
       - name: Install dependencies (skip optional deps)
-        run: npm ci --omit=optional
+        run: npm install --omit=optional
 
       - name: Build
         run: npm run build
-        env:
-          ROLLUP_SKIP_NODEJS_NATIVE: "1"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
