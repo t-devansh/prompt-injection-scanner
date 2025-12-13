@@ -5,7 +5,8 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import ScanForm from "./components/ScanForm.jsx";
 import SummaryPanel from "./components/SummaryPanel.jsx";
 import ResultsPanel from "./components/ResultsPanel.jsx";
-import Footer from "./components/footer";
+// import Footer from "./components/footer";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 /** Animated background */
 function AnimatedBackground() {
@@ -85,11 +86,15 @@ export default function App() {
     <div className="relative min-h-screen text-gray-100">
       <AnimatedBackground />
 
-      <header className="py-6 text-center bg-gray-100 dark:bg-gray-900">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-          Prompt-Injection Risk Scanner
-        </h1>
+      {/* Header */}
+      <header className={`border-b ${GLASS}`}>
+        <div className="mx-auto max-w-7xl p-4 text-center">
+          <h1 className="text-2xl font-bold text-white">
+            Prompt-Injection Risk Scanner
+          </h1>
+        </div>
       </header>
+
 
 
       {/* Main */}
@@ -214,7 +219,33 @@ export default function App() {
         </Card>
       </main>
 
-      <footer />
+      {/* Footer */}
+      <footer className={`mx-auto max-w-7xl p-4 text-gray-300 text-center ${GLASS}`}>
+        <div className="flex flex-col sm:flex-row items-center justify-between">
+          <p className="text-xs">
+            © {new Date().getFullYear()} Devansh Tandon. All rights reserved.
+          </p>
+          <div className="flex gap-5 mt-2 sm:mt-0 justify-center">
+            <a
+              href="https://github.com/t-devansh"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white transition-colors"
+            >
+              <i className="fab fa-github text-lg"></i>
+            </a>
+            <a
+              href="https://linkedin.com/in/devanshtandon"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-blue-400 transition-colors"
+            >
+              <i className="fab fa-linkedin text-lg"></i>
+            </a>
+          </div>
+        </div>
+      </footer>
+
 
 
       {/* Expand HTML Modal (moved here) */}
