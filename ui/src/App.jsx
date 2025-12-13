@@ -223,7 +223,7 @@ export default function App() {
         <div className="flex justify-between items-center">
           {/* Left side text */}
           <span className="text-gray-200">
-            Made by <span className="font-semibold">Devansh Tandon</span>
+            Made by Devansh Tandon
           </span>
 
           {/* Right side icons */}
