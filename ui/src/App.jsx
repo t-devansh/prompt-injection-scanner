@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import ScanForm from "./components/ScanForm.jsx";
 import SummaryPanel from "./components/SummaryPanel.jsx";
 import ResultsPanel from "./components/ResultsPanel.jsx";
+import Footer from "./components/footer";
 
 /** Animated background */
 function AnimatedBackground() {
@@ -84,13 +85,12 @@ export default function App() {
     <div className="relative min-h-screen text-gray-100">
       <AnimatedBackground />
 
-      {/* Header */}
-      <header className={`border-b ${GLASS}`}>
-        <div className="mx-auto max-w-7xl p-4">
-          <h1 className="text-2xl font-bold">Prompt-Injection Risk Scanner</h1>
-          <p className="text-sm text-gray-300">React · Tailwind · Flowbite-React</p>
-        </div>
+      <header className="py-6 text-center bg-gray-100 dark:bg-gray-900">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+          Prompt-Injection Risk Scanner
+        </h1>
       </header>
+
 
       {/* Main */}
       <main className="mx-auto max-w-7xl p-6 space-y-6">
@@ -214,10 +214,8 @@ export default function App() {
         </Card>
       </main>
 
-      {/* Footer */}
-      <footer className={`mx-auto max-w-7xl p-4 text-xs text-gray-300 text-center ${GLASS}`}>
-        Prompt-Injection Risk Scanner · Built with FastAPI · React · Tailwind · Flowbite
-      </footer>
+      <footer />
+
 
       {/* Expand HTML Modal (moved here) */}
       <AnimatePresence>
