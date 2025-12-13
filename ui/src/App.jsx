@@ -229,20 +229,23 @@ export default function App() {
             className="hover:opacity-80 transition"
           >
             <img
-              src="/icons/github.png"
+              src={`${import.meta.env.BASE_URL}icons/github.png`}
+
               alt="GitHub"
               className="h-6 w-6 inline-block"
             />
           </a>
 
           <a
-            href="https://linkedin.com/in/devansh-tandon"
+            href="https://www.linkedin.com/in/tandon-devansh/"
+            
             target="_blank"
             rel="noopener noreferrer"
             className="hover:opacity-80 transition"
           >
             <img
-              src="/icons/linkedin.png"
+              src={`${import.meta.env.BASE_URL}icons/linkedin.png`}
+
               alt="LinkedIn"
               className="h-6 w-6 inline-block"
             />
