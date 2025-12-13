@@ -5,8 +5,8 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import ScanForm from "./components/ScanForm.jsx";
 import SummaryPanel from "./components/SummaryPanel.jsx";
 import ResultsPanel from "./components/ResultsPanel.jsx";
-// import Footer from "./components/footer";
-import "@fortawesome/fontawesome-free/css/all.min.css";
+
+
 
 /** Animated background */
 function AnimatedBackground() {
@@ -220,29 +220,33 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className={`mx-auto max-w-7xl p-4 text-gray-300 text-center ${GLASS}`}>
-        <div className="flex flex-col sm:flex-row items-center justify-between">
-          <p className="text-xs">
-            © {new Date().getFullYear()} Devansh Tandon. All rights reserved.
-          </p>
-          <div className="flex gap-5 mt-2 sm:mt-0 justify-center">
-            <a
-              href="https://github.com/t-devansh"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors"
-            >
-              <i className="fab fa-github text-lg"></i>
-            </a>
-            <a
-              href="https://linkedin.com/in/devanshtandon"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-blue-400 transition-colors"
-            >
-              <i className="fab fa-linkedin text-lg"></i>
-            </a>
-          </div>
+      <footer className={`mx-auto max-w-7xl p-4 text-xs text-gray-300 text-center ${GLASS}`}>
+        <div className="flex justify-center space-x-6">
+          <a
+            href="https://github.com/t-devansh"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:opacity-80 transition"
+          >
+            <img
+              src="/icons/github.png"
+              alt="GitHub"
+              className="h-6 w-6 inline-block"
+            />
+          </a>
+
+          <a
+            href="https://linkedin.com/in/devansh-tandon"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:opacity-80 transition"
+          >
+            <img
+              src="/icons/linkedin.png"
+              alt="LinkedIn"
+              className="h-6 w-6 inline-block"
+            />
+          </a>
         </div>
       </footer>
 
