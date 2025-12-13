@@ -219,39 +219,45 @@ export default function App() {
         </Card>
       </main>
 
-      {/* Footer */}
-      <footer className={`mx-auto max-w-7xl p-4 text-xs text-gray-300 text-center ${GLASS}`}>
-        <div className="flex justify-center space-x-6">
-          <a
-            href="https://github.com/t-devansh"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:opacity-80 transition"
-          >
-            <img
-              src={`${import.meta.env.BASE_URL}icons/github.png`}
+      <footer className={`mx-auto max-w-7xl p-4 text-sm text-gray-300 ${GLASS}`}>
+        <div className="flex justify-between items-center">
+          {/* Left side text */}
+          <span className="text-gray-200">
+            Made by <span className="font-semibold">Devansh Tandon</span>
+          </span>
 
-              alt="GitHub"
-              className="h-6 w-6 inline-block"
-            />
-          </a>
+          {/* Right side icons */}
+          <div className="flex space-x-4">
+            <a
+              href="https://github.com/t-devansh"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:opacity-80 transition"
+            >
+              <img
+                src={`${import.meta.env.BASE_URL}icons/github.png`}
+                alt="GitHub"
+                className="h-6 w-6 inline-block filter invert hover:opacity-80 transition"
+              />
+            </a>
 
-          <a
-            href="https://www.linkedin.com/in/tandon-devansh/"
-            
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:opacity-80 transition"
-          >
-            <img
-              src={`${import.meta.env.BASE_URL}icons/linkedin.png`}
-
-              alt="LinkedIn"
-              className="h-6 w-6 inline-block"
-            />
-          </a>
+            <a
+              href="https://www.linkedin.com/in/tandon-devansh/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:opacity-80 transition"
+            >
+              <img
+                src={`${import.meta.env.BASE_URL}icons/linkedin.png`}
+                alt="LinkedIn"
+                className="h-6 w-6 inline-block filter invert hover:opacity-80 transition"
+              />
+            </a>
+          </div>
         </div>
       </footer>
+
+
 
 
 
