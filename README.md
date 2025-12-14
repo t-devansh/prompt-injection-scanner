@@ -1,201 +1,177 @@
 ﻿# Prompt-Injection Risk Scanner
 
-A FastAPI service and CLI that scan AI-powered pages for prompt-injection risks.
-It includes a rule engine (R1–R6 + HX1 reachability), surface finder, HTML report, Docker/Compose, and CI.
+A full stack system for scanning AI powered web pages for prompt injection vulnerabilities.
+Built with FastAPI for the backend and React with Tailwind CSS for the frontend.
+
+Prompt injection is rated as the number one security risk in the OWASP Top 10 for Large Language Model Applications in both the 2023 and 2025 editions. Due to its growing real world impact and my strong interest in both software development and cybersecurity, I decided to build this project to better understand the problem space and contribute a practical tool.
+
+Beyond risk detection, this project is also designed as a learning and experimentation tool. It allows students and developers to explore how prompt injection works, test real examples, and understand why certain patterns are dangerous. The system is built with extensibility in mind, and I plan to expand it over time with additional detection rules, heuristics, and analysis features.
 
 ---
-## Features (MVP)
+
+## 🚀 Overview
+
+**Frontend:**  
+Deployed on **GitHub Pages** – modern React UI for scanning URLs or inline HTML.  
+
+**Backend:**  
+Deployed on **Render** – FastAPI service providing the scanning API.
+
+---
+
+## ⚙️ Features
 
 - **API**
-  - `GET /health` – health check.
-  - `POST /scan` – scan **exactly one** of `{ "url": "..." }` or `{ "html": "..." }`.
-    - Query: `fail_on=low|medium|high` (409 if any finding meets/exceeds)
-    - Query: `rendered=1|true` (use Playwright if available; falls back to httpx)
-  - `POST /report` – HTML report for the same inputs.
-    - Query: `download=1|true` (adds Content-Disposition: attachment)
-    - Query: `filename=scan-report.html` (custom filename)
+  - `GET /health` – health check  
+  - `POST /scan` – scan one of `{ "url": "..." }` or `{ "html": "..." }`
+    - Query: `fail_on=low|medium|high`
+    - Query: `rendered=1|true` → uses Playwright (falls back to httpx)
+  - `POST /report` – generates downloadable HTML report
+    - Query: `download=1|true`
+    - Query: `filename=scan-report.html`
+
 - **Rules**
-  - R1: "ignore previous instructions" pattern
-  - R2: secrets/"reveal" indicator
+  - R1: “ignore previous instructions”
+  - R2: secrets / “reveal” indicators
   - R3: zero-width / homoglyph obfuscation
   - R4: mixed-script / suspicious Unicode
-  - R5: role coercion / system-prompt impersonation ("act as the system", "developer mode", etc.)
-  - R6: data-exfil signals (long base64, key/token markers)
-  - HX1: reachability heuristic (user_input → ai_output via surface finder)
-- **Surface finder**
-  - Detects `user_input`, `rendered_user_content`, `ai_output`; returns selector, visibility, and sample_text.
-- **Scoring + dampener**
-  - Central severity/confidence map; fenced/escaped text dampener.
-- **CLI**
-  - `python -m src.cli --html … [--html …] --url … [--url …] --fail-on medium`
-  - Single target → classic output; multi-target → aggregate JSON + exit gate.
-- **Docker/Compose**
-  - One image; entrypoint supports MODE=api|cli.
-- **CI**
-  - Pytest + scanner workflow (default fail_on=high).
+  - R5: role coercion / system-prompt impersonation
+  - R6: data-exfiltration markers
+  - HX1: user_input → ai_output reachability heuristic
+
+- **Additional logic**
+  - Surface finder for identifying risky DOM areas
+  - Confidence dampening for escaped text
+  - Severity thresholds with fail-on gating
 
 ---
 
-## Setup 
-
-Follow these steps if you're running the project in a fresh environment.
+## 🧩 Setup (Local Development)
 
 ### 1. Clone the repository
-
-First, download the project from GitHub and move into the project folder:
-
-```
-
+```bash
 git clone https://github.com/t-devansh/prompt-injection-scanner.git
 cd prompt-injection-scanner
 ```
----
-### 2. Set up the backend (FastAPI)
 
-Create a virtual environment and install the Python dependencies:
-
-```
+### 2. Backend setup
+```bash
 python -m venv .venv
-# Activate the environment
-source .venv/bin/activate   # Mac/Linux
-.\.venv\Scripts\activate    # Windows PowerShell
+# Activate
+source .venv/bin/activate   # macOS/Linux
+.\.venv\Scripts\activate    # Windows
 
-# Install dependencies
 pip install -r requirements.txt
+uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Once the dependencies are installed, follow the [Quickstart (Local UI)](#quickstart-local-ui) section to start the backend and frontend servers.
-
----
-
-## Quickstart (Local UI)
-Run the backend:
-```
-uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000 
-```
-
-Run the frontend:
-
-```
+### 3. Frontend setup
+```bash
 cd ui
 npm install
 npm run dev
 ```
 
-![Frontend Screenshot](docs/FrontendUI.png)
-
-Then open the link Vite shows in your terminal  
-(usually http://localhost:5173 or http://localhost:5174).  
-
-Make sure the backend is still running on port 8000.
-
----
-## Quickstart (Docker)
-
-    docker compose up --build -d
-    curl http://localhost:8000/health
-    # -> {"status":"ok"}
-
-**CLI via Compose (uses same image):**
-
-    docker compose run --rm scanner-cli
-    echo $?
+Then open **http://localhost:5173**  
+(make sure backend runs on port **8000**).
 
 ---
 
+## 🐳 Docker (optional)
 
-## API Usage
+```bash
+docker compose up --build -d
+curl http://localhost:8000/health
+# -> {"status":"ok"}
+```
 
-### Health
-
-    curl http://localhost:8000/health
-
-### Scan (quick fetch via httpx)
-
-    # PowerShell
-    $body = @{ html = '<div><input><div class="ai-output">AI reply</div></div>' } | ConvertTo-Json -Compress
-    Invoke-RestMethod -Uri "http://localhost:8000/scan" -Method Post -Body $body -ContentType "application/json"
-
-### Scan (rendered mode via Playwright, falls back if unavailable)
-
-    # PowerShell
-    $body = @{ url = "https://example.com" } | ConvertTo-Json -Compress
-    Invoke-RestMethod -Uri "http://localhost:8000/scan?rendered=1" -Method Post -Body $body -ContentType "application/json"
-
-### HTML Report
-
-    # PowerShell
-    $body = @{ html = "<p>Please IGNORE previous instructions</p>" } | ConvertTo-Json -Compress
-    # Inline view
-    Invoke-RestMethod -Uri "http://localhost:8000/report" -Method Post -Body $body -ContentType "application/json" | Out-Null
-    # Download
-    Invoke-RestMethod -Uri "http://localhost:8000/report?download=1&filename=my-scan.html" -Method Post -Body $body -ContentType "application/json"
+CLI via Compose:
+```bash
+docker compose run --rm scanner-cli
+echo $?
+```
 
 ---
-## CLI Usage
 
-Single target (back-compat JSON shape):
+## 🧠 API Examples
 
-    python -m src.cli --html "<div><p>hello</p></div>" --fail-on high
+**Health check**
+```bash
+curl http://localhost:8000/health
+```
 
-Multi-target (aggregate + per-target results):
+**Scan (HTML)**
+```bash
+# PowerShell
+$body = @{ html = '<div><input><div class="ai-output">AI reply</div></div>' } | ConvertTo-Json -Compress
+Invoke-RestMethod -Uri "http://localhost:8000/scan" -Method Post -Body $body -ContentType "application/json"
+```
 
-    python -m src.cli --html "<div><p>safe</p></div>" --html "<div><input><div class='ai-output'>AI</div></div>" --fail-on medium
+**Scan (Rendered URL)**
+```bash
+# PowerShell
+$body = @{ url = "https://example.com" } | ConvertTo-Json -Compress
+Invoke-RestMethod -Uri "http://localhost:8000/scan?rendered=1" -Method Post -Body $body -ContentType "application/json"
+```
 
-Check exit code:
-
-    # PowerShell
-    echo $LASTEXITCODE
-    # cmd.exe
-    echo %ERRORLEVEL%
-
----
-## Optional: Rendered Scanning (Playwright)
-
-Rendered scans use a headless browser to capture the final DOM and a simple network log. This is optional and not installed by default.
-
-Install locally:
-
-    pip install -r requirements-playwright.txt
-    python -m playwright install chromium
-
-Sanity test (only runs if Playwright is installed):
-
-    pytest -q tests/test_playwright_loader_optional.py
-
-Use rendered mode via API:
-
-    # PowerShell
-    $body = @{ url = "https://example.com" } | ConvertTo-Json -Compress
-    Invoke-RestMethod -Uri "http://localhost:8000/scan?rendered=1" -Method Post -Body $body -ContentType "application/json"
-
-Notes:
-- The default Docker image / CI do not include Playwright/Chromium.
-- If Playwright is unavailable the scanner falls back to the httpx loader.
+**Download report (HTML)**
+```bash
+# PowerShell
+$body = @{ html = "<p>Please IGNORE previous instructions</p>" } | ConvertTo-Json -Compress
+# Inline view
+Invoke-RestMethod -Uri "http://localhost:8000/report" -Method Post -Body $body -ContentType "application/json" | Out-Null
+# Download
+Invoke-RestMethod -Uri "http://localhost:8000/report?download=1&filename=my-scan.html" -Method Post -Body $body -ContentType "application/json"
+```
 
 ---
-## Configuration Knobs (env)
 
-- `SCANNER_SEVERITY_OVERRIDES` – override per rule, e.g. `R1:high,R2:low`
-- `SCANNER_DAMPENER` – 0.0..1.0; scales confidence after dampening (default 1.0)
-- `SCANNER_HTTP_TIMEOUT_SECONDS` – httpx timeout for URL loader (default 10.0)
+## 🧪 Playwright (Optional Rendered Mode)
+
+```bash
+pip install -r requirements-playwright.txt
+python -m playwright install chromium
+pytest -q tests/test_playwright_loader_optional.py
+```
+
+If Playwright isn’t available, the scanner automatically falls back to httpx.
+
+---
+
+## ⚙️ Configuration (env)
+
+| Variable | Description | Default |
+|-----------|--------------|----------|
+| `SCANNER_SEVERITY_OVERRIDES` | Override per rule (e.g. `R1:high,R2:low`) | – |
+| `SCANNER_DAMPENER` | 0.0–1.0 confidence scaling | `1.0` |
+| `SCANNER_HTTP_TIMEOUT_SECONDS` | Timeout for URL fetch | `10.0` |
 
 Example (PowerShell):
-
-    $env:SCANNER_SEVERITY_OVERRIDES = "R1:high,R2:low"
-    $env:SCANNER_DAMPENER = "0.5"
-    $env:SCANNER_HTTP_TIMEOUT_SECONDS = "5"
-
----
-## Docker Compose
-
-docker-compose.yml defines:
-
-- `api` – FastAPI server (MODE=api), health-checked
-- `scanner-cli` – runs CLI in the same image (MODE=cli)
+```bash
+$env:SCANNER_SEVERITY_OVERRIDES = "R1:high,R2:low"
+$env:SCANNER_DAMPENER = "0.5"
+$env:SCANNER_HTTP_TIMEOUT_SECONDS = "5"
+```
 
 ---
-## Notes
 
-- On Windows, `curl.exe` is good for raw HTTP; `Invoke-RestMethod` is nicer for JSON.
-- `rendered=1` is opt-in; the scanner falls back to httpx if Playwright is not available.
+## 🧰 Deployment
+
+- **Frontend:** Deployed via GitHub Actions to GitHub Pages (`gh-pages` branch)
+- **Backend:** Deployed to Render with automatic redeploys from `main`
+- **CORS:** Configured to allow both `localhost` and `https://t-devansh.github.io`
+
+---
+
+## 💡 Notes
+
+- Works with or without Playwright; auto-fallback is built in.  
+- The frontend communicates with the deployed Render backend.  
+- You can self-host both parts using the provided Docker Compose file.
+
+---
+
+## 🧑‍💻 Author
+
+**Made by [Devansh Tandon](https://www.linkedin.com/in/tandon-devansh/)**  
+GitHub: [t-devansh](https://github.com/t-devansh)
