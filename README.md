@@ -7,6 +7,9 @@ Prompt injection is rated as the number one security risk in the OWASP Top 10 fo
 
 Beyond risk detection, this project is also designed as a learning and experimentation tool. It allows students and developers to explore how prompt injection works, test real examples, and understand why certain patterns are dangerous. The system is built with extensibility in mind, and I plan to expand it over time with additional detection rules, heuristics, and analysis features.
 
+
+🔗 **Try it out!:** [https://t-devansh.github.io/prompt-injection-scanner/](https://t-devansh.github.io/prompt-injection-scanner/)
+
 ---
 
 ## 🚀 Overview
