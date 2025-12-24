@@ -357,6 +357,80 @@ export default function App() {
           <span className="sr-only">Open actions menu</span>
         </button>
       </div>
+    
+
+    {/* Settings Modal (animated, glass) */}
+    <AnimatePresence>
+      {settingsOpen && (
+        <motion.div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            initial={{ scale: 0.94, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.94, opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.2, 0.8, 0.2, 1] }}
+            className="rounded-lg w-full max-w-md mx-4
+                      bg-white/10 dark:bg-white/5 backdrop-blur-md
+                      border border-white/20 dark:border-white/10
+                      shadow-[0_8px_30px_rgba(0,0,0,0.24)]"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-white/10">
+              <h3 className="text-lg font-semibold text-white">Scan Settings</h3>
+              <button
+                onClick={() => setSettingsOpen(false)}
+                className="text-gray-300 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="p-4 space-y-6">
+              <div>
+                <Label htmlFor="fail_on" value="Fail on severity" className="text-gray-200" />
+                <Select
+                  id="fail_on"
+                  value={failOn}
+                  onChange={(e) => setFailOn(e.target.value)}
+                  className="bg-white/10 text-gray-100 border-white/20"
+                >
+                  <option value="none">None</option>
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </Select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="rendered"
+                  checked={rendered}
+                  onChange={(e) => setRendered(e.target.checked)}
+                />
+                <Label htmlFor="rendered" className="text-gray-200">
+                  Use rendered page (Playwright)
+                </Label>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex justify-end gap-2 p-4 border-t border-white/10">
+              <Button color="gray" onClick={() => setSettingsOpen(false)}>
+                Cancel
+              </Button>
+              <Button color="blue" onClick={() => setSettingsOpen(false)}>
+                Save
+              </Button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
 
     </div>
   );
