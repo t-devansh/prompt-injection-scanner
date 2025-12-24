@@ -260,13 +260,7 @@ export default function App() {
 
 
 
-      <AdvancedControls
-          failOn={failOn}
-          setFailOn={setFailOn}
-          rendered={rendered}
-          setRendered={setRendered}
-        />
-
+      
 
       {/* Expand HTML Modal (moved here) */}
       <AnimatePresence>
@@ -321,6 +315,49 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+
+      {/* SpeedDial (bottom right corner) */}
+      <div className="fixed bottom-6 right-6 flex flex-col items-end z-[9998] group">
+        {/* Hover action: Scan Settings */}
+        <AnimatePresence>
+          <motion.button
+            key="settings-button"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.25 }}
+            onClick={() => setSettingsOpen(true)}
+            className="mb-3 hidden group-hover:flex justify-center items-center w-[52px] h-[52px]
+                      text-gray-100 hover:text-white bg-white/10 backdrop-blur-md border border-white/20
+                      dark:border-white/10 shadow-md hover:bg-white/20 focus:ring-4 focus:ring-white/10
+                      rounded-full"
+          >
+            <HiAdjustments className="w-5 h-5" />
+            <span className="sr-only">Scan Settings</span>
+          </motion.button>
+        </AnimatePresence>
+
+        {/* Main FAB */}
+        <button
+          type="button"
+          className="flex items-center justify-center text-white bg-blue-600 rounded-full w-14 h-14
+                    hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 transition-transform group-hover:rotate-45"
+        >
+          <svg
+            className="w-6 h-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 18 18"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 1v16M1 9h16" />
+          </svg>
+          <span className="sr-only">Open actions menu</span>
+        </button>
+      </div>
+
     </div>
   );
 }
