@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import ScanForm from "./components/ScanForm.jsx";
 import SummaryPanel from "./components/SummaryPanel.jsx";
 import ResultsPanel from "./components/ResultsPanel.jsx";
+import AdvancedControls from "./components/AdvancedControls";
 
 
 
@@ -259,6 +260,12 @@ export default function App() {
 
 
 
+      <AdvancedControls
+          failOn={failOn}
+          setFailOn={setFailOn}
+          rendered={rendered}
+          setRendered={setRendered}
+        />
 
 
       {/* Expand HTML Modal (moved here) */}
